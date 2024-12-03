@@ -77,9 +77,9 @@ public class S3Publisher implements Publisher {
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.addUserMetadata("to_state", String.valueOf(blob.getToVersion()));
-        metadata.setHeader("Content-Length", blob.getFile().length());
+        metadata.setHeader("Content-Length", blob.getPath().toFile().length());
         
-        uploadFile(blob.getFile(), objectName, metadata);
+        uploadFile(blob.getPath().toFile(), objectName, metadata);
         
         /// now we update the snapshot index
         updateSnapshotIndex(blob.getToVersion());
@@ -91,9 +91,9 @@ public class S3Publisher implements Publisher {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.addUserMetadata("from_state", String.valueOf(blob.getFromVersion()));
         metadata.addUserMetadata("to_state", String.valueOf(blob.getToVersion()));
-        metadata.setHeader("Content-Length", blob.getFile().length());
+        metadata.setHeader("Content-Length", blob.getPath().toFile().length());
         
-        uploadFile(blob.getFile(), objectName, metadata);
+        uploadFile(blob.getPath().toFile(), objectName, metadata);
     }
 
     public void publishReverseDelta(Blob blob) {
@@ -102,9 +102,9 @@ public class S3Publisher implements Publisher {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.addUserMetadata("from_state", String.valueOf(blob.getFromVersion()));
         metadata.addUserMetadata("to_state", String.valueOf(blob.getToVersion()));
-        metadata.setHeader("Content-Length", blob.getFile().length());
+        metadata.setHeader("Content-Length", blob.getPath().toFile().length());
         
-        uploadFile(blob.getFile(), objectName, metadata);
+        uploadFile(blob.getPath().toFile(), objectName, metadata);
     }
     
     public static String getS3ObjectName(String blobNamespace, String fileType, long lookupVersion) {
