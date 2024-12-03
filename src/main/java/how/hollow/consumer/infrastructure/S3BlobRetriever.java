@@ -19,12 +19,14 @@ package how.hollow.consumer.infrastructure;
 
 import com.amazonaws.SdkBaseException;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.transfer.Download;
 import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.netflix.hollow.api.consumer.HollowConsumer.Blob;
 import com.netflix.hollow.api.consumer.HollowConsumer.BlobRetriever;
 import com.netflix.hollow.core.memory.encoding.VarInt;
@@ -43,8 +45,8 @@ public class S3BlobRetriever implements BlobRetriever {
     private final String blobNamespace;
 
     public S3BlobRetriever(AWSCredentials credentials, String bucketName, String blobNamespace) {
-        this.s3 = new AmazonS3Client(credentials);
-        this.s3TransferManager = new TransferManager(s3);
+        this.s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+        this.s3TransferManager = TransferManagerBuilder.standard().withS3Client(s3).build();
         this.bucketName = bucketName;
         this.blobNamespace = blobNamespace;
     }

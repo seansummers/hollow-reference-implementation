@@ -18,7 +18,8 @@
 package how.hollow.producer.infrastructure;
 
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
@@ -33,7 +34,7 @@ public class DynamoDBAnnouncer implements Announcer {
     private final String blobNamespace;
 
     public DynamoDBAnnouncer(AWSCredentials credentials, String tableName, String blobNamespace) {
-        this.dynamoDB = new DynamoDB(new AmazonDynamoDBClient(credentials));
+        this.dynamoDB = new DynamoDB(AmazonDynamoDBClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build());
         this.tableName = tableName;
         this.blobNamespace = blobNamespace;
     }

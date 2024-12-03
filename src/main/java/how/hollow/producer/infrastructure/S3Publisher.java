@@ -18,12 +18,14 @@
 package how.hollow.producer.infrastructure;
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.netflix.hollow.api.producer.HollowProducer.Blob;
 import com.netflix.hollow.api.producer.HollowProducer.Publisher;
@@ -50,8 +52,8 @@ public class S3Publisher implements Publisher {
     private final List<Long> snapshotIndex;
     
     public S3Publisher(AWSCredentials credentials, String bucketName, String blobNamespace) {
-        this.s3 = new AmazonS3Client(credentials);
-        this.s3TransferManager = new TransferManager(s3);
+        this.s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+        this.s3TransferManager = TransferManagerBuilder.standard().withS3Client(s3).build();
         this.bucketName = bucketName;
         this.blobNamespace = blobNamespace;
         this.snapshotIndex = initializeSnapshotIndex();

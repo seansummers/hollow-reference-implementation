@@ -18,8 +18,9 @@
 package how.hollow.consumer.infrastructure;
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.netflix.hollow.api.consumer.HollowConsumer;
 import com.netflix.hollow.api.consumer.HollowConsumer.AnnouncementWatcher;
 import how.hollow.producer.infrastructure.S3Announcer;
@@ -39,7 +40,7 @@ public class S3AnnouncementWatcher implements AnnouncementWatcher {
     
     
     public S3AnnouncementWatcher(AWSCredentials credentials, String bucketName, String blobNamespace) {
-        this.s3 = new AmazonS3Client(credentials);
+        this.s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
         this.bucketName = bucketName;
         this.blobNamespace = blobNamespace;
         this.subscribedConsumers = Collections.synchronizedList(new ArrayList<HollowConsumer>());

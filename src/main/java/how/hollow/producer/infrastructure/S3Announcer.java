@@ -18,8 +18,9 @@
 package how.hollow.producer.infrastructure;
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.netflix.hollow.api.producer.HollowProducer.Announcer;
 
 public class S3Announcer implements Announcer {
@@ -31,7 +32,7 @@ public class S3Announcer implements Announcer {
     private final String blobNamespace;
 
     public S3Announcer(AWSCredentials credentials, String bucketName, String blobNamespace) {
-        this.s3 = new AmazonS3Client(credentials);
+        this.s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
         this.bucketName = bucketName;
         this.blobNamespace = blobNamespace;
     }
